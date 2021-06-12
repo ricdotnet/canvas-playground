@@ -51,9 +51,7 @@ public class Window extends JFrame {
 
             @Override
             public void keyReleased(KeyEvent keyEvent) {
-//                if(keyEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
-//                    entity.setxPos(0);
-//                }
+
             }
         });
     }
