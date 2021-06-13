@@ -1,92 +1,78 @@
+import Actions.*;
 import Entity.Entity;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
-public class Window extends JFrame {
+public class Window extends JFrame implements Runnable {
 
     public final int WIDTH = 640;
     public final int HEIGHT = 480;
-    private boolean RUNNING = true;
 
     private BufferStrategy bufferStrategy;
+    private BufferedImage bg;
 
-    static Window window = new Window();
-    MainPanel mainPanel = new MainPanel(this);
+    GameLoop gameLoop = new GameLoop(this);
     Entity entity;
 
+    MainMenu mainMenu = new MainMenu(this);
+
     public Window() {
+
+    }
+
+    public static void main(String args[]) {
+        new Window().run();
+    }
+
+    public void init() {
         setMinimumSize(new Dimension(WIDTH, HEIGHT));
         setSize(new Dimension(WIDTH, HEIGHT));
         setResizable(false);
         setLocationRelativeTo(null);
         setLayout(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+//        mainWindow.add(mainMenu);
+        setVisible(true);
 
-        entity = new Entity(10, 100, Math.toRadians(0));
-
-        addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent keyEvent) {
-            }
-
-            @Override
-            public void keyPressed(KeyEvent keyEvent) {
-                if(keyEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    entity.setRotation(Math.toRadians(5));
-                }
-                if(keyEvent.getKeyCode() == KeyEvent.VK_LEFT) {
-                    entity.setRotation(Math.toRadians(-5));
-                }
-                if(keyEvent.getKeyCode() == KeyEvent.VK_UP) {
-                    entity.setyPos(5);
-                }
-                if(keyEvent.getKeyCode() == KeyEvent.VK_DOWN) {
-                    entity.setyPos(-5);
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent keyEvent) {
-
-            }
-        });
+        entity = new Entity(250, 250, Math.toRadians(0));
+        try {
+            bg = ImageIO.read(getClass().getResource("/bg.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        addKeyListener(new Keys(this, entity));
     }
 
-    public static void main(String args[]) {
-        window.setVisible(true);
-        window.add(window.mainPanel);
+    @Override
+    public void run() {
+        init();
+        gameLoop.loop();
+    }
 
-//        new Window().run();
-
-        while (window.RUNNING) {
-//            System.out.println("hey");
-            window.render();
-        }
+    public void tick() {
+        entity.tick();
     }
 
     public void render() {
-        repaint();
+        bufferStrategy = getBufferStrategy();
+        if(bufferStrategy == null) {
+            createBufferStrategy(3);
+            return;
+        }
+        Graphics2D graphics = (Graphics2D) bufferStrategy.getDrawGraphics();
+        // ---------- //
+
+        graphics.drawImage(bg, 0, 0, this);
+
+        entity.render(graphics);
+
+        // ---------- //
+        graphics.dispose();
+        bufferStrategy.show();
     }
-
-    /**
-     * Render the graphics
-     */
-    public void paint(Graphics g) {
-        super.paint(g);
-
-        Graphics2D g2d = (Graphics2D) g;
-        entity.render(g2d);
-    }
-
-//    @Override
-//    public void run() {
-//        while (RUNNING) {
-////            System.out.println("hey");
-//            render();
-//        }
-//    }
 }
