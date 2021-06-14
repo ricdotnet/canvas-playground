@@ -9,8 +9,8 @@ import java.text.DecimalFormat;
 
 public class Entity extends JComponent {
 
-    private int xPos;
-    private int yPos;
+    private double xPos;
+    private double yPos;
     private int xVel;
     private int yVel;
     private double rotation;
@@ -31,8 +31,21 @@ public class Entity extends JComponent {
     }
 
     public void tick() {
-        this.xPos += xVel;
-        this.xPos -= yVel;
+//        this.xPos += xVel;
+//        this.xPos -= yVel;
+
+        if(xVel > 0) {
+            move();
+        }
+
+//        double angle = getRotation();
+//        this.xPos += Math.cos(angle);
+//        this.yPos += Math.sin(angle);
+    }
+
+    public void move() {
+        this.xPos += Math.cos(getRotation());
+        this.yPos += Math.sin(getRotation());
     }
 
     public void render(Graphics2D g) {
@@ -41,19 +54,19 @@ public class Entity extends JComponent {
 
     public void drawEntity(Graphics2D entity) {
         entity.setBackground(Color.BLACK);
-        entity.rotate(rotation, xPos+16, yPos+16);
+        entity.rotate(rotation, xPos+16, yPos+8);
 //        entity.drawRect(xPos, yPos, 32, 32);
 //        entity.fillRect(xPos, yPos, 32, 32);
-        entity.drawImage(image, xPos, yPos, this);
+        entity.drawImage(image, (int) xPos, (int) yPos, this);
 
         entity.setColor(Color.WHITE);
         entity.drawString(String.valueOf(Math.toDegrees(getRotation())), (int) xPos, (int) yPos-10);
     }
 
-    public void setxPos(int xPos) {
+    public void setxPos(double xPos) {
         this.xPos += xPos;
     }
-    public void setyPos(int yPos) {
+    public void setyPos(double yPos) {
         this.yPos += yPos;
     }
     public void setxVel(int xVel) {
@@ -74,10 +87,10 @@ public class Entity extends JComponent {
         this.rotation += rotation;
     }
 
-    public int getxPos() {
+    public double getxPos() {
         return xPos;
     }
-    public int getyPos() {
+    public double getyPos() {
         return yPos;
     }
     public double getxVel() {

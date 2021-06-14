@@ -25,23 +25,32 @@ public class Keys implements KeyListener {
     public void keyPressed(KeyEvent keyEvent) {
         if(keyEvent.getKeyCode() == KeyEvent.VK_UP) {
             int current = 0;
-            while(entity.getxVel() < 10) {
+            while(entity.getxVel() < 5) {
                 entity.setxVel(current);
+                double angle = entity.getRotation();
+                entity.setxPos(Math.cos(angle));
+                entity.setyPos(Math.sin(angle));
+
                 current += 1;
             }
         }
         if(keyEvent.getKeyCode() == KeyEvent.VK_DOWN) {
             int current = 0;
-            while(entity.getyVel() < 10) {
+            while(entity.getxVel() < 5) {
                 entity.setyVel(current);
+                double angle = entity.getRotation();
+                entity.setxPos(-Math.cos(angle));
+                entity.setyPos(-Math.sin(angle));
                 current += 1;
             }
         }
         if(keyEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
-            entity.setRotation(Math.toRadians(1));
+            if(entity.getxVel() != 0)
+                entity.setRotation(Math.toRadians(5));
         }
         if(keyEvent.getKeyCode() == KeyEvent.VK_LEFT) {
-            entity.setRotation(-Math.toRadians(1));
+            if(entity.getxVel() != 0)
+                entity.setRotation(-Math.toRadians(5));
         }
     }
 
@@ -51,7 +60,7 @@ public class Keys implements KeyListener {
             entity.setxVel(0);
         }
         if(keyEvent.getKeyCode() == KeyEvent.VK_DOWN) {
-            entity.setyVel(0);
+            entity.setxVel(0);
         }
     }
 }
